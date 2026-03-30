@@ -21,6 +21,7 @@ def main():
         from jws_diag.rules.tls_rule import TLSMisconfigRule
         from jws_diag.rules.port_rule import DuplicatePortRule
         from jws_diag.rules.engine import RuleEngine
+        from jws_diag.rules.proxy_rule import ProxyMisconfigRule
 
         connectors = parse_connectors(args.file)
 
@@ -32,6 +33,7 @@ def main():
         rules = [
             TLSMisconfigRule(),
             DuplicatePortRule(),
+            ProxyMisconfigRule(),
         ]
 
         engine = RuleEngine(rules)

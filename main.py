@@ -1,6 +1,5 @@
 import argparse
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="jws-diag: Diagnose Tomcat/JBoss server.xml configurations"
@@ -20,6 +19,8 @@ def main():
     if args.command == "analyze":
         from jws_diag.parser.xml_parser import parse_connectors
         from jws_diag.rules.tls_rule import TLSMisconfigRule
+        from jws_diag.rules.port_rule import DuplicatePortRule
+        from jws_diag.rules.engine import RuleEngine
 
         connectors = parse_connectors(args.file)
 
@@ -27,9 +28,14 @@ def main():
         for c in connectors:
             print(c)
 
-        # Apply TLS rule
-        rule = TLSMisconfigRule()
-        issues = rule.check(connectors)
+        # Rule engine
+        rules = [
+            TLSMisconfigRule(),
+            DuplicatePortRule(),
+        ]
+
+        engine = RuleEngine(rules)
+        issues = engine.run(connectors)
 
         if issues:
             print("\nIssues found:")
